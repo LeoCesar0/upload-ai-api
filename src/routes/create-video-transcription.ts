@@ -18,27 +18,34 @@ export async function createVideoTranscriptionRoute(app: FastifyInstance) {
     const { prompt } = bodySchema.parse(req.body);
 
     const video = await prisma.video.findUniqueOrThrow({
-      where:{
+      where: {
         id: videoId,
-      }
-    })
+      },
+    });
 
-    const readStream = createReadStream(video.path)
+    const readStream = createReadStream(video.path);
 
     const openAiResponse = await openAi.audio.transcriptions.create({
       file: readStream,
-      model: 'whisper-1',
-      language: 'pt',
+      model: "whisper-1",
+      language: "pt",
       prompt: prompt,
-      response_format: 'json',
-      temperature: 0
-    })
+      response_format: "json",
+      temperature: 0,
+    });
 
-    return openAiResponse.text
+    const transcription = openAiResponse.text;
 
-    // return {
-    //   videoId,
-    //   prompt,
-    // };
+    await prisma.video.update({
+      data: {
+        transcription: transcription,
+      },
+      where: {
+        id: videoId,
+      },
+    });
+
+    return transcription;
+
   });
 }

@@ -1,13 +1,20 @@
 import { fastify } from "fastify";
+import { fastifyCors } from "@fastify/cors";
 import { getAllPromptsRoute } from "./routes/get-all-prompts";
 import { uploadVideoRoute } from "./routes/upload-video";
 import { createVideoTranscriptionRoute } from "./routes/create-video-transcription";
+import { generateTextRoute } from "./routes/generate-text";
 
 const app = fastify();
 
-app.register(getAllPromptsRoute)
-app.register(uploadVideoRoute)
-app.register(createVideoTranscriptionRoute)
+app.register(fastifyCors, {
+  origin: "*",
+});
+
+app.register(getAllPromptsRoute);
+app.register(uploadVideoRoute);
+app.register(createVideoTranscriptionRoute);
+app.register(generateTextRoute);
 
 const port = 3333;
 
