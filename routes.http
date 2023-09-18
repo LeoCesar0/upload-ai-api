@@ -4,6 +4,8 @@ GET http://localhost:3333/prompts
 
 ###
 
+# @name upload-video
+
 POST http://localhost:3333/video
 Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
 
@@ -17,9 +19,23 @@ Content-Type: audio/mpeg
 
 ###
 
+# @name create-video-transcription
+
 POST http://localhost:3333/video/29edc6a6-7e40-47b6-b995-028c469354d8/transcription
 Content-Type: application/json
 
 {
-    "prompt": "Transcription of the audio"
+    "prompt": "Gere uma transcrição para o áudio"
+}
+
+###
+
+# @name generate-ai-response
+
+POST http://localhost:3333/generate
+Content-Type: application/json
+
+{
+    "template": "Dê um título pra seguinte transcrição do áudio: '''{transcription}'''",
+    "videoId": "29edc6a6-7e40-47b6-b995-028c469354d8"
 }
