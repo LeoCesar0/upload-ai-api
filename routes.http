@@ -36,6 +36,6 @@ POST http://localhost:3333/generate
 Content-Type: application/json
 
 {
-    "template": "Dê um título pra seguinte transcrição do áudio: '''{transcription}'''",
+    "prompt": "Dê um título pra seguinte transcrição do áudio: '''{transcription}'''",
     "videoId": "29edc6a6-7e40-47b6-b995-028c469354d8"
 }

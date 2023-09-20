@@ -2,21 +2,23 @@ import { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { prisma } from "../lib/prisma";
 import { openAi } from "../lib/openai";
+import {streamToResponse, OpenAIStream} from 'ai'
 
 const bodySchema = z.object({
   videoId: z.string().uuid(),
-  template: z.string(),
+  prompt: z.string(),
   temperature: z.number().min(0).max(1).default(0.5),
+  model: z.string().default("gpt-3.5-turbo-16k")
 });
 
 export async function generateTextRoute(app: FastifyInstance) {
   app.post("/generate", async (req, res) => {
-    const { temperature, template, videoId } = bodySchema.parse(req.body);
+    const { temperature, prompt, videoId, model } = bodySchema.parse(req.body);
 
-    if (!template.includes("{transcription}")) {
+    if (!prompt.includes("{transcription}")) {
       return res.status(400).send({
         error: {
-          message: "Invalid template. Must include {transcription}",
+          message: "Invalid prompt. Must include {transcription}",
         },
       });
     }
@@ -37,19 +39,32 @@ export async function generateTextRoute(app: FastifyInstance) {
       });
     }
 
-    const promptMessage = template.replace("{transcription}", transcription);
+    let fullPrompt = prompt
+
+    if(!fullPrompt.includes("{transcription}")) fullPrompt = `${fullPrompt}. Transcription: '''{transcription}'''`
+
+    fullPrompt = prompt.replace("{transcription}", transcription);
 
     const openAiResponse = await openAi.chat.completions.create({
-      model: "gpt-3.5-turbo-16k",
+      model: model,
       temperature: temperature,
       messages: [
         {
-          content: promptMessage,
+          content: fullPrompt,
           role: "user",
         },
       ],
+      stream:true
     });
 
-    return openAiResponse;
+    const stream = OpenAIStream(openAiResponse)
+
+    streamToResponse(stream, res.raw, {
+      headers:{
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      }
+    })
+
   });
 }

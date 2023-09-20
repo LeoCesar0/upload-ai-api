@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "tsx watch src/server.ts"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -20,6 +23,7 @@
     "@fastify/cors": "^8.3.0",
     "@fastify/multipart": "^7.7.3",
     "@prisma/client": "5.2.0",
+    "ai": "^2.2.13",
     "fastify": "^4.23.0",
     "openai": "^4.8.0",
     "zod": "^3.22.2"
