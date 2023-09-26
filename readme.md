@@ -10,9 +10,8 @@
 4. [Getting Started](#getting-started)
 5. [Usage](#usage)
 6. [Customization](#customization)
-7. [Dependencies](#dependencies)
-8. [Contributing](#contributing)
-9. [License](#license)
+7. [Contributing](#contributing)
+8. [License](#license)
 
 ## Introduction
 
@@ -63,32 +62,6 @@ The Video Transcription App is highly customizable:
 
 - **Prompt Templates:** Modify existing prompt templates to generate content that suits your needs.
 
-## Dependencies
-
-This project relies on the following key dependencies and technologies:
-
-### Front-end:
-
-- TypeScript
-- Vite
-- React
-- Tailwind CSS
-- SWR
-- Axios
-- Zod
-- Zustand
-- FFMPEG (WebAssembly)
-- Radix
-
-### Back-end:
-
-- Node.js
-- Prisma
-- Fastify
-- OpenAI
-- Zod
-
-For a complete list of dependencies and their versions, please refer to the `package.json` files in the respective front-end and back-end directories.
 
 ## Contributing
 
