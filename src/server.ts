@@ -20,7 +20,7 @@ app.register(generateTextRoute);
 
 
 
-const port = process.env.PORT ? Number(process.env.PORT) : 3333;
+const port = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 app
   .listen({
