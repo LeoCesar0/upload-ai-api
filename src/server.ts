@@ -18,6 +18,8 @@ app.register(uploadVideoDiskRoute);
 app.register(createVideoTranscriptionRoute);
 app.register(generateTextRoute);
 
+
+
 const port = process.env.PORT ? Number(process.env.PORT) : 3333;
 
 app
