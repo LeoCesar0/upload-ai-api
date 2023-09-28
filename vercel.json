@@ -6,10 +6,15 @@
       "use": "@now/node"
     }
   ],
-  "routes": [
+  "functions": {
+    "dist/**/*.js": {
+      "runtime": "nodejs14.x"
+    }
+  },
+  "rewrites": [
     {
-      "src": "/(.*)",
-      "dest": "/dist/server.js"
+      "source": "/(.*)",
+      "destination": "/dist/server.js"
     }
   ]
 }
