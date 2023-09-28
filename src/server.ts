@@ -7,19 +7,18 @@ import { generateTextRoute } from "./routes/generate-text";
 import { uploadVideoDiskRoute } from "./routes/upload-video-disk";
 
 const app = fastify({
-  logger: true
+  logger: true,
 });
 
 app.register(fastifyCors, {
   origin: "*",
 });
 
-
 app.register(async (app) => {
   app.get("/test", async (req, res) => {
-    return { test: "Hello"}
-  })
-})
+    return { test: "Hello" };
+  });
+});
 
 app.register(getAllPromptsRoute);
 app.register(uploadVideoRoute);
@@ -27,21 +26,20 @@ app.register(uploadVideoDiskRoute);
 app.register(createVideoTranscriptionRoute);
 app.register(generateTextRoute);
 
+const port = process.env.PORT ? Number(process.env.PORT) : 3333;
 
+app
+  .listen({
+    port: port,
+    host: "0.0.0.0",
+  })
+  .then(() => {
+    console.log(`HTTP server running on port ${port}`);
+  });
 
-// const port = process.env.PORT ? Number(process.env.PORT) : 3333;
+export default app;
 
-// app
-//   .listen({
-//     port: port,
-//     host: '0.0.0.0'
-//   })
-//   .then(() => {
-//     console.log(`HTTP server running on port ${port}`);
-//   });
-
-export default async (req: any, res: any) => {
-  await app.ready();
-  app.server.emit('request', req, res);
-}
-
+// export default async (req: any, res: any) => {
+//   await app.ready();
+//   app.server.emit('request', req, res);
+// }

@@ -2,19 +2,15 @@
   "version": 2,
   "builds": [
     {
-      "src": "./dist/server.js",
-      "use": "@now/node"
+      "src": "dist/server.js",
+      "use": "@vercel/node",
+      "config": { "includeFiles": ["dist/**"] }
     }
   ],
-  "functions": {
-    "dist/**/*.js": {
-      "runtime": "nodejs14.x"
-    }
-  },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/dist/server.js"
+      "src": "/(.*)",
+      "dest": "dist/server.js"
     }
   ]
 }
