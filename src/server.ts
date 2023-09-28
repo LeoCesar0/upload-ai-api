@@ -12,6 +12,13 @@ app.register(fastifyCors, {
   origin: "*",
 });
 
+
+app.register(async (app) => {
+  app.get("/test", async (req, res) => {
+    return { test: "Hello"}
+  })
+})
+
 app.register(getAllPromptsRoute);
 app.register(uploadVideoRoute);
 app.register(uploadVideoDiskRoute);
