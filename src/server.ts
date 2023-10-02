@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 import * as dotenv from "dotenv";
 dotenv.config();
 
@@ -9,6 +9,8 @@ import { uploadVideoRoute } from "./routes/upload-video";
 import { createVideoTranscriptionRoute } from "./routes/create-video-transcription";
 import { generateTextRoute } from "./routes/generate-text";
 import { uploadVideoDiskRoute } from "./routes/upload-video-disk";
+
+const port = process.env.PORT ? Number(process.env.PORT) : 3333;
 
 const app = fastify({
   logger: true,
@@ -30,8 +32,6 @@ app.register(uploadVideoDiskRoute);
 app.register(createVideoTranscriptionRoute);
 app.register(generateTextRoute);
 
-const port = process.env.PORT ? Number(process.env.PORT) : 3333;
-
 app
   .listen({
     port: port,
@@ -41,9 +41,21 @@ app
     console.log(`HTTP server running on port ${port}`);
   });
 
-export default app;
+// if (require.main === module) {
+//   // called directly i.e. "node app"
+//   init()
+//     .listen({
+//       port: port,
+//       host: "0.0.0.0",
+//     })
+//     .then(() => {
+//       console.log(`HTTP server running on port ${port}`);
+//     });
+// } else {
+//   module.exports = init;
+// }
 
-// export default async (req: any, res: any) => {
-//   await app.ready();
-//   app.server.emit("request", req, res);
-// };
+export default async (req: any, res: any) => {
+  await app.ready();
+  app.server.emit("request", req, res);
+};

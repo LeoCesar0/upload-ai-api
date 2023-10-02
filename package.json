@@ -2,19 +2,19 @@
   "name": "upload-ai-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/server.ts",
   "engines": {
     "node": "18"
   },
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "node dist/server.js",
-    "build": "npx prisma generate && tsup src"
+    "build": "npx prisma generate && tsup src",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
-  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -26,6 +26,7 @@
     "typescript": "^5.2.2"
   },
   "dependencies": {
+    "@fastify/aws-lambda": "^3.3.0",
     "@fastify/cors": "^8.3.0",
     "@fastify/multipart": "^7.7.3",
     "@prisma/client": "5.2.0",
