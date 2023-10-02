@@ -29,65 +29,84 @@ export async function createVideoTranscriptionRoute(app: FastifyInstance) {
       },
     });
 
-    console.log("Creating stream");
+    let tempPath = "";
 
-    const object = getS3Object(video.path);
+    try {
+      console.log("prompt -->", prompt);
+      console.log("--> Creating stream");
 
-    const tempReadStream = object.createReadStream();
+      console.log("NODE ENV -->", process.env.NODE_ENV);
 
-    const extension = path.extname(video.name);
+      console.log("--> 1");
+      const object = getS3Object(video.path);
+      console.log("--> 2");
+      const tempReadStream = object.createReadStream();
+      console.log("--> 3");
 
-    let tempPath = `/tmp/${randomUUID()}${extension}`;
+      const extension = path.extname(video.name);
 
-    console.log('NODE ENV -->', process.env.NODE_ENV)
+      console.log("--> 4");
 
-    if (
-      process.env.NODE_ENV === "dev" ||
-      process.env.NODE_ENV === "development"
-    ) {
-      tempPath = path.resolve(
-        __dirname,
-        `../../tmp/${randomUUID()}${extension}`
-      );
-    }
+      tempPath = `/tmp/${randomUUID()}${extension}`;
 
-    // const tempPath = path.resolve("/tmp", `${randomUUID()}${extension}`);
+      console.log("--> 5");
 
-    // const tempPath = path.resolve(
-    //   __dirname,
-    //   `../../tmp/${randomUUID()}${extension}`
-    // );
+      // const tempPath = path.resolve("/tmp", `${randomUUID()}${extension}`);
 
-    const promise = new Promise((resolve, reject) => {
-      const pipe = tempReadStream.pipe(createWriteStream(tempPath));
-      pipe.on("finish", () => {
-        resolve({});
+      // const tempPath = path.resolve(
+      //   __dirname,
+      //   `../../tmp/${randomUUID()}${extension}`
+      // );
+
+      // if (
+      //   process.env.NODE_ENV === "dev" ||
+      //   process.env.NODE_ENV === "development"
+      // ) {
+      //   tempPath = path.resolve(
+      //     __dirname,
+      //     `../../tmp/${randomUUID()}${extension}`
+      //   );
+      // }
+
+      const promise = new Promise((resolve, reject) => {
+        const pipe = tempReadStream.pipe(createWriteStream(tempPath));
+        pipe.on("finish", () => {
+          resolve({});
+        });
       });
-    });
-    await promise;
 
-    const readStream = createReadStream(tempPath);
+      await promise;
 
-    const openAiResponse = await openAi.audio.transcriptions.create({
-      file: readStream,
-      model: "whisper-1",
-      language: "pt",
-      prompt: prompt,
-      response_format: "json",
-      temperature: 0,
-    });
+      const readStream = createReadStream(tempPath);
 
-    const transcription = openAiResponse.text;
+      const openAiResponse = await openAi.audio.transcriptions.create({
+        file: readStream,
+        model: "whisper-1",
+        language: "pt",
+        prompt: prompt,
+        response_format: "json",
+        temperature: 0,
+      });
 
-    await prisma.video.update({
-      data: {
-        transcription: transcription,
-      },
-      where: {
-        id: videoId,
-      },
-    });
+      const transcription = openAiResponse.text;
 
-    return transcription;
+      await prisma.video.update({
+        data: {
+          transcription: transcription,
+        },
+        where: {
+          id: videoId,
+        },
+      });
+
+      return transcription;
+    } catch (err) {
+      return {
+        error: err,
+        message: "Error on create transcription",
+        env: process.env.NODE_ENV,
+        tempPath,
+      };
+    }
   });
 }
