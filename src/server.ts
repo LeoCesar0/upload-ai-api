@@ -18,6 +18,7 @@ const app = fastify({
 
 app.register(fastifyCors, {
   origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE"],
 });
 
 app.register(async (app) => {
