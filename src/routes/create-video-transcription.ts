@@ -37,10 +37,26 @@ export async function createVideoTranscriptionRoute(app: FastifyInstance) {
 
     const extension = path.extname(video.name);
 
-    const tempPath = path.resolve(
-      __dirname,
-      `../../tmp/${randomUUID()}${extension}`
-    );
+    let tempPath = `/tmp/${randomUUID()}${extension}`;
+
+    console.log('NODE ENV -->', process.env.NODE_ENV)
+
+    if (
+      process.env.NODE_ENV === "dev" ||
+      process.env.NODE_ENV === "development"
+    ) {
+      tempPath = path.resolve(
+        __dirname,
+        `../../tmp/${randomUUID()}${extension}`
+      );
+    }
+
+    // const tempPath = path.resolve("/tmp", `${randomUUID()}${extension}`);
+
+    // const tempPath = path.resolve(
+    //   __dirname,
+    //   `../../tmp/${randomUUID()}${extension}`
+    // );
 
     const promise = new Promise((resolve, reject) => {
       const pipe = tempReadStream.pipe(createWriteStream(tempPath));
